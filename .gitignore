@@ -1,0 +1,6 @@
+git clone https://github.com/giangnguyenhadn/Quan-ly-Thiet-bi-CNTT.git
+cd Quan-ly-Thiet-bi-CNTT
+echo "# Quan ly thiet bi CNTT" > README.md
+git add .
+git commit -m "Initial commit"
+git push origin main
