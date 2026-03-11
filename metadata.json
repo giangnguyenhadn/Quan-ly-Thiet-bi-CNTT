@@ -1,0 +1,7 @@
+{
+  "name": "QUẢN LÝ THIẾT BỊ CÔNG NGHỆ THÔNG TIN- TRƯỜNG TIỂU HỌC TRẦN ĐẠI NGHĨA, HÒA XUÂN, ĐÀ NẴNG",
+  "description": "Hệ thống quản lý thiết bị công nghệ thông tin sử dụng QR Code dành cho trường Tiểu học Trần Đại Nghĩa.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
