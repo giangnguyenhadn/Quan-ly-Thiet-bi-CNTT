@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import Layout from './components/Layout.tsx';
+import Layout from './Layout';
 import Dashboard from './views/Dashboard';
 import DeviceList from './views/DeviceList';
 import ScannerView from './views/ScannerView';
