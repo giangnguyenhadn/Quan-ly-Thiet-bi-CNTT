@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
-import { Transaction, Device, Staff } from '../types';
+import { Transaction, Device, Staff } from './types';
 import { Search, Download, Printer } from 'lucide-react';
-import { exportOrPrint } from '../utils/exportUtils';
+import { exportOrPrint } from './exportUtils';
 
 interface HistoryListProps {
   transactions: Transaction[];

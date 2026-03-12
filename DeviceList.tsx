@@ -1,12 +1,12 @@
 
 import React, { useState } from 'react';
-import { Device, DeviceStatus, DeviceType, LocationType } from '../types';
+import { Device, DeviceStatus, DeviceType, LocationType } from './types';
 import { 
   Search, Plus, QrCode, Edit2, Trash2, X, Printer, 
   Download, CheckSquare, Square, Loader2, Tag, Box, DollarSign, Calendar, Cpu, FileText
 } from 'lucide-react';
-import { addDevice, updateDevice, deleteDevice } from '../db';
-import { exportOrPrint, printQRLabelCards } from '../utils/exportUtils';
+import { addDevice, updateDevice, deleteDevice } from './db';
+import { exportOrPrint, printQRLabelCards } from './exportUtils';
 
 interface DeviceListProps {
   devices: Device[];

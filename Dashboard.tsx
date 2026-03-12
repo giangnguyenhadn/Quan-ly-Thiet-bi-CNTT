@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Device, LocationType, DeviceStatus, DeviceType } from '../types';
+import { Device, LocationType, DeviceStatus, DeviceType } from './types';
 import { 
   Monitor, 
   AlertCircle, 

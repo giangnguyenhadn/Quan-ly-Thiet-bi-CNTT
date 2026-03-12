@@ -38,13 +38,13 @@ const App: React.FC = () => {
       case "dashboard":
         return <Dashboard devices={devices} transactions={transactions} />;
       case "devices":
-        return <DeviceList devices={devices} />;
+        return <DeviceList devices={devices} refreshData={refreshData} />;
       case "scanner":
         return (
           <ScannerView
             devices={devices}
             staff={staff}
-            onTransactionComplete={handleTransactionComplete}
+            onComplete={handleTransactionComplete}
           />
         );
       case "inventory":
@@ -52,9 +52,9 @@ const App: React.FC = () => {
       case "ai":
         return <AIRecommendationView devices={devices} />;
       case "staff":
-        return <StaffList staff={staff} />;
+        return <StaffList staff={staff} refreshData={refreshData} />;
       case "history":
-        return <HistoryList transactions={transactions} />;
+        return <HistoryList transactions={transactions} devices={devices} staff={staff} />;
       default:
         return <Dashboard devices={devices} transactions={transactions} />;
     }

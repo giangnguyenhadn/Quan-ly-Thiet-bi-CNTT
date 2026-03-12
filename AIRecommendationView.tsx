@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
 import { Sparkles, Loader2, AlertTriangle, ShieldCheck, Wrench, Trash2 } from 'lucide-react';
-import { Device, AIRecommendation } from '../types';
-import { getAIRecommendations } from '../geminiService';
+import { Device, AIRecommendation } from './types';
+import { getAIRecommendations } from './geminiService';
 
 interface AIRecommendationViewProps {
   devices: Device[];
