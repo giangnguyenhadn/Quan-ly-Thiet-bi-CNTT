@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from "react";
 
-import Layout from './Layout';
-import Dashboard from './Dashboard';
-import DeviceList from './DeviceList';
-import ScannerView from './ScannerView';
-import Inventory from './Inventory';
-import AIRecommendationView from './AIRecommendationView';
-import StaffList from './StaffList';
-import HistoryList from './HistoryList';
-import { Device, Staff, Transaction } from './types';
-import { getDevices, getStaff, getTransactions, addTransaction } from './db';
+import Layout from "./Layout";
+import Dashboard from "./Dashboard";
+import DeviceList from "./DeviceList";
+import ScannerView from "./ScannerView";
+import Inventory from "./Inventory";
+import AIRecommendationView from "./AIRecommendationView";
+import StaffList from "./StaffList";
+import HistoryList from "./HistoryList";
+
+import { Device, Staff, Transaction } from "./types";
+import { getDevices, getStaff, getTransactions, addTransaction } from "./db";
 
 const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const [role, setRole] = useState<'ADMIN' | 'TEACHER'>('ADMIN');
+  const [activeTab, setActiveTab] = useState("dashboard");
   const [devices, setDevices] = useState<Device[]>([]);
   const [staff, setStaff] = useState<Staff[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -28,51 +28,41 @@ const App: React.FC = () => {
     refreshData();
   }, []);
 
-  const handleTransactionComplete = (t: Transaction) => {
-    addTransaction(t);
+  const handleTransactionComplete = (transaction: Transaction) => {
+    addTransaction(transaction);
     refreshData();
   };
 
-  const renderContent = () => {
+  const renderView = () => {
     switch (activeTab) {
-      case 'dashboard':
+      case "dashboard":
         return <Dashboard devices={devices} transactions={transactions} />;
-      case 'devices':
-        return <DeviceList devices={devices} refreshData={refreshData} />;
-      case 'scan':
-        return <ScannerView devices={devices} staff={staff} onComplete={handleTransactionComplete} />;
-      case 'inventory':
+      case "devices":
+        return <DeviceList devices={devices} />;
+      case "scanner":
+        return (
+          <ScannerView
+            devices={devices}
+            staff={staff}
+            onTransactionComplete={handleTransactionComplete}
+          />
+        );
+      case "inventory":
         return <Inventory devices={devices} />;
-      case 'ai':
+      case "ai":
         return <AIRecommendationView devices={devices} />;
-      case 'staff':
-        return <StaffList staff={staff} refreshData={refreshData} />;
-      case 'history':
-        return <HistoryList transactions={transactions} devices={devices} staff={staff} />;
+      case "staff":
+        return <StaffList staff={staff} />;
+      case "history":
+        return <HistoryList transactions={transactions} />;
       default:
         return <Dashboard devices={devices} transactions={transactions} />;
     }
   };
 
   return (
-    <Layout activeTab={activeTab} setActiveTab={setActiveTab} role={role}>
-      <div className="flex justify-end mb-6">
-        <div className="bg-slate-100 p-1 rounded-xl flex">
-          <button 
-            onClick={() => setRole('ADMIN')}
-            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${role === 'ADMIN' ? 'bg-white shadow text-blue-600' : 'text-slate-500'}`}
-          >
-            QUẢN TRỊ
-          </button>
-          <button 
-            onClick={() => { setRole('TEACHER'); setActiveTab('scan'); }}
-            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${role === 'TEACHER' ? 'bg-white shadow text-blue-600' : 'text-slate-500'}`}
-          >
-            GIÁO VIÊN
-          </button>
-        </div>
-      </div>
-      {renderContent()}
+    <Layout activeTab={activeTab} setActiveTab={setActiveTab}>
+      {renderView()}
     </Layout>
   );
 };
