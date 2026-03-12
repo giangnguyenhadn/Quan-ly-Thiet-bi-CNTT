@@ -1,10 +1,10 @@
 
 import React, { useState, useRef } from 'react';
-import { Staff } from '../types';
+import { Staff } from './types';
 import { Search, Download, Users, Plus, Edit2, Trash2, X, Upload, CheckSquare, Square, FileSpreadsheet, AlertTriangle, Loader2, FileDown } from 'lucide-react';
 // Corrected import from exportToExcel to exportOrPrint
-import { exportOrPrint } from '../utils/exportUtils';
-import { addStaff, updateStaff, deleteStaff, saveStaff } from '../db';
+import { exportOrPrint } from './exportUtils';
+import { addStaff, updateStaff, deleteStaff, saveStaff } from './db';
 import * as XLSX from 'xlsx';
 
 interface StaffListProps {

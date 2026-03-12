@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { Device, DeviceStatus } from '../types';
+import { Device, DeviceStatus } from './types';
 import { Download, Printer } from 'lucide-react';
-import { exportOrPrint } from '../utils/exportUtils';
+import { exportOrPrint } from './exportUtils';
 
 interface InventoryProps {
   devices: Device[];

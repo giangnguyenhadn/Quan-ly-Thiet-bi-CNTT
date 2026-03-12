@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 /* Added AlertTriangle to the lucide-react import list */
 import { QrCode, Camera, Search, User, Info, CheckCircle2, Package, MapPin, Tag, AlertTriangle } from 'lucide-react';
 // Added LocationType to the imports for type-safe comparisons
-import { Device, Staff, Transaction, DeviceStatus, LocationType } from '../types';
-import Scanner from '../components/Scanner';
+import { Device, Staff, Transaction, DeviceStatus, LocationType } from './types';
+import Scanner from './Scanner';
 
 interface ScannerViewProps {
   devices: Device[];
