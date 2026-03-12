@@ -1,5 +1,4 @@
 
-import React, { useState, useEffect } from 'react';
 import Layout from './Layout';
 import Dashboard from './Dashboard';
 import DeviceList from './DeviceList';
