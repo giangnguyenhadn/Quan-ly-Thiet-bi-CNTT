@@ -62,8 +62,8 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, role
         <div className="p-5 border-b">
           <div className="flex items-center justify-between">
             <div className="text-left">
-              <p className="text-[10px] font-bold text-blue-400 uppercase leading-none mb-1">ubnd phường Hòa Xuân</p>
-              <h1 className="text-[11px] font-black text-blue-800 leading-tight">TRƯỜNG TH TRẦN ĐẠI NGHĨA</h1>
+              <p className="text-[10px] font-bold text-blue-400 uppercase leading-none mb-1"> TRƯỜNG TH TRẦN ĐẠI NGHĨA</p>
+              <h1 className="text-[11px] font-black text-blue-800 leading-tight">PHƯỜNG HOÀ XUÂN</h1>
               <p className="text-[13px] text-red-500 font-bold mt-1">Quản lý Thiết bị CNTT</p>
             </div>
             <img 
