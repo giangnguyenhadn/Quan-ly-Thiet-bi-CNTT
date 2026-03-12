@@ -1,13 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
 import Layout from './Layout';
-import Dashboard from './views/Dashboard';
-import DeviceList from './views/DeviceList';
-import ScannerView from './views/ScannerView';
-import Inventory from './views/Inventory';
-import AIRecommendationView from './views/AIRecommendationView';
-import StaffList from './views/StaffList';
-import HistoryList from './views/HistoryList';
+import Dashboard from './Dashboard';
+import DeviceList from './DeviceList';
+import ScannerView from './ScannerView';
+import Inventory from './Inventory';
+import AIRecommendationView from './AIRecommendationView';
+import StaffList from './StaffList';
+import HistoryList from './HistoryList';
 import { Device, Staff, Transaction } from './types';
 import { getDevices, getStaff, getTransactions, addTransaction } from './db';
 
