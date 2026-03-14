@@ -1,10 +1,17 @@
-
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Device, AIRecommendation } from "./types";
+
+// Sử dụng import.meta.env để đọc API Key từ Vercel/Vite
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+const genAI = new GoogleGenerativeAI(apiKey || "");
 
 export const getAIRecommendations = async (devices: Device[]): Promise<AIRecommendation[]> => {
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    // Sử dụng model gemini-1.5-flash để đảm bảo tính ổn định cao nhất
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-1.5-flash",
+      generationConfig: { responseMimeType: "application/json" }
+    });
     
     const deviceSummary = devices.map(d => ({
       id: d.id,
@@ -14,37 +21,14 @@ export const getAIRecommendations = async (devices: Device[]): Promise<AIRecomme
       repairCount: d.repairCount
     }));
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: `Phân tích danh sách thiết bị sau và đề xuất sửa chữa hoặc thanh lý. 
-      Quy tắc: 
-      - Thanh lý nếu: Sử dụng quá 5 năm HOẶC hư hỏng nặng HOẶC sửa chữa > 5 lần.
-      - Sửa chữa nếu: Tình trạng "Cần sửa" và mới sử dụng dưới 3 năm.
-      Danh sách: ${JSON.stringify(deviceSummary)}`,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.ARRAY,
-          items: {
-            type: Type.OBJECT,
-            properties: {
-              deviceId: { type: Type.STRING },
-              deviceName: { type: Type.STRING },
-              reason: { type: Type.STRING },
-              action: { 
-                type: Type.STRING,
-                description: "Must be 'REPAIR' or 'LIQUIDATE'"
-              }
-            },
-            required: ["deviceId", "deviceName", "reason", "action"]
-          }
-        }
-      }
-    });
+    const prompt = `Phân tích danh sách thiết bị sau và đề xuất sửa chữa hoặc thanh lý. 
+      Trả về JSON mảng: [{ "deviceId": string, "deviceName": string, "reason": string, "action": "REPAIR" | "LIQUIDATE" }]
+      Dữ liệu: ${JSON.stringify(deviceSummary)}`;
 
-    return JSON.parse(response.text);
+    const result = await model.generateContent(prompt);
+    return JSON.parse(result.response.text());
   } catch (error) {
-    console.error("AI Recommendation Error:", error);
+    console.error("AI Error:", error);
     return [];
   }
 };
