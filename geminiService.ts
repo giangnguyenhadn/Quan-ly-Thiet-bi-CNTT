@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Device, AIRecommendation } from "./types";
 
 // Sử dụng import.meta.env để đọc API Key từ Vercel/Vite
-const apiKey = import.meta.env.GEMINI_API_KEY;
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey || "");
 
 export const getAIRecommendations = async (devices: Device[]): Promise<AIRecommendation[]> => {
