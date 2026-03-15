@@ -2,15 +2,21 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Device, AIRecommendation } from "./types";
 
+// Lấy API key từ Vite ENV
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
+// Kiểm tra API key
 if (!apiKey) {
-  throw new Error("Missing GEMINI_API_KEY");
+  throw new Error("Missing VITE_GEMINI_API_KEY in environment variables");
 }
 
+// Khởi tạo Gemini
 const genAI = new GoogleGenerativeAI(apiKey);
 
-export const getAIRecommendations = async (devices: Device[]): Promise<AIRecommendation[]> => {
+export const getAIRecommendations = async (
+  devices: Device[]
+): Promise<AIRecommendation[]> => {
+
   try {
 
     const model = genAI.getGenerativeModel({
@@ -20,6 +26,7 @@ export const getAIRecommendations = async (devices: Device[]): Promise<AIRecomme
       }
     });
 
+    // Tóm tắt dữ liệu để gửi cho AI
     const dataSummary = devices.map(d => ({
       id: d.id,
       name: d.name,
@@ -28,18 +35,23 @@ export const getAIRecommendations = async (devices: Device[]): Promise<AIRecomme
     }));
 
     const prompt = `
-Phân tích dữ liệu thiết bị trường học.
+Phân tích dữ liệu thiết bị CNTT của trường học.
 
-Dữ liệu:
+Dữ liệu thiết bị:
 ${JSON.stringify(dataSummary)}
 
-Chỉ trả về JSON array đúng format sau:
+Yêu cầu:
+- Chỉ trả về JSON
+- Không thêm giải thích
+- Không markdown
+
+Format bắt buộc:
 
 [
  {
-  "deviceId": "...",
-  "deviceName": "...",
-  "reason": "...",
+  "deviceId": "string",
+  "deviceName": "string",
+  "reason": "string",
   "action": "REPAIR" | "LIQUIDATE"
  }
 ]
@@ -49,15 +61,21 @@ Chỉ trả về JSON array đúng format sau:
 
     const text = result.response.text();
 
+    // Làm sạch JSON nếu AI trả markdown
     const cleaned = text
       .replace(/```json/g, "")
       .replace(/```/g, "")
       .trim();
 
-    return JSON.parse(cleaned);
+    const parsed: AIRecommendation[] = JSON.parse(cleaned);
+
+    return parsed;
 
   } catch (error) {
-    console.error("Lỗi AI:", error);
+
+    console.error("AI Analysis Error:", error);
+
     return [];
+
   }
 };
