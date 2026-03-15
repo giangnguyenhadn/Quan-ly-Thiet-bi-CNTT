@@ -7,7 +7,8 @@ const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
 // Kiểm tra API key
 if (!apiKey) {
-  throw new Error("Missing VITE_GEMINI_API_KEY in environment variables");
+  console.warn("Missing Gemini API Key");
+}
 }
 
 // Khởi tạo Gemini
