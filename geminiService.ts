@@ -6,7 +6,7 @@ import { Device, AIRecommendation } from "./types";
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
 if (!apiKey) {
-  console.error("Missing Gemini API Key. Please check your .env file or Vercel settings.");
+  console.error("LỖI: Không tìm thấy Gemini API Key trong biến môi trường (VITE_GEMINI_API_KEY).");
 }
 
 const genAI = new GoogleGenerativeAI(apiKey || "");
@@ -14,15 +14,22 @@ const genAI = new GoogleGenerativeAI(apiKey || "");
 export const getAIRecommendations = async (
   devices: Device[]
 ): Promise<AIRecommendation[]> => {
-  if (!apiKey) return [];
+  // Kiểm tra nếu không có key hoặc danh sách thiết bị rỗng
+  if (!apiKey) {
+    console.warn("Yêu cầu bị hủy: Thiếu API Key.");
+    return [];
+  }
+  
+  if (devices.length === 0) {
+    console.warn("Yêu cầu bị hủy: Danh sách thiết bị gửi đi đang trống.");
+    return [];
+  }
 
   try {
-    // Sử dụng gemini-1.5-flash để tốc độ xử lý nhanh hơn
+    // Sử dụng gemini-1.5-flash
     const model = genAI.getGenerativeModel({
       model: "gemini-1.5-flash",
       generationConfig: {
-        // Khi dùng responseMimeType là application/json, 
-        // Gemini sẽ trả về text là một chuỗi JSON chuẩn, không có ký tự lạ hay backticks.
         responseMimeType: "application/json"
       }
     });
@@ -35,49 +42,53 @@ export const getAIRecommendations = async (
     }));
 
     const prompt = `
-      Bạn là chuyên gia quản lý thiết bị CNTT trường học.
-      Phân tích danh sách thiết bị sau và đưa ra đề xuất sửa chữa hoặc thanh lý.
-      Dữ liệu: ${JSON.stringify(dataSummary)}
+      Bạn là một chuyên gia quản lý thiết bị CNTT trường học tại Việt Nam.
+      Dựa trên danh sách thiết bị sau, hãy phân tích tình trạng và đưa ra quyết định:
+      1. Nếu thiết bị hư hỏng nặng hoặc đã sửa chữa quá nhiều lần (>3 lần), hãy đề xuất "LIQUIDATE" (Thanh lý).
+      2. Nếu thiết bị còn tốt hoặc hỏng nhẹ, hãy đề xuất "REPAIR" (Sửa chữa).
 
-      Yêu cầu đầu ra là một mảng JSON chính xác theo cấu trúc:
+      Dữ liệu thiết bị: ${JSON.stringify(dataSummary)}
+
+      Trả về một mảng JSON chính xác theo cấu trúc này:
       [
         {
           "deviceId": "string",
           "deviceName": "string",
-          "reason": "Giải thích ngắn gọn lý do bằng tiếng Việt",
-          "action": "REPAIR" hoặc "LIQUIDATE"
+          "reason": "Giải thích lý do cụ thể bằng tiếng Việt",
+          "action": "REPAIR" | "LIQUIDATE"
         }
       ]
     `;
 
+    console.log("Đang gửi yêu cầu phân tích tới Gemini AI...");
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
 
-    // Xử lý an toàn: Nếu có lỗi hoặc text rỗng
     if (!text) {
-      console.warn("AI returned empty response");
-      return [];
+      throw new Error("AI trả về phản hồi rỗng.");
     }
 
     try {
-      // Vì đã cấu hình responseMimeType: "application/json", 
-      // ta KHÔNG cần dùng .replace(/`json/g, "") nữa.
       const parsed: AIRecommendation[] = JSON.parse(text);
+      console.log("Phân tích AI thành công:", parsed);
       return parsed;
     } catch (parseError) {
-      console.error("Lỗi parse JSON từ Gemini:", text);
-      // Fallback: Nếu vẫn dính backticks thì mới dùng regex
+      // Xử lý trường hợp AI tự thêm markdown block ```json
       const cleaned = text.replace(/```json|```/g, "").trim();
-      return JSON.parse(cleaned);
+      const fallbackParsed = JSON.parse(cleaned);
+      console.log("Phân tích AI thành công (sau khi dọn dẹp):", fallbackParsed);
+      return fallbackParsed;
     }
 
   } catch (error: any) {
-    // Kiểm tra lỗi 403 (thường do API Key hoặc vùng địa lý)
+    // Xử lý các lỗi phổ biến
     if (error.message?.includes("403")) {
-      console.error("AI Error 403: Có thể do API Key sai hoặc vùng lãnh thổ bị hạn chế.");
+      console.error("Lỗi 403: API Key không hợp lệ hoặc bị chặn địa lý/CORS.");
+    } else if (error.message?.includes("429")) {
+      console.error("Lỗi 429: Bạn đã vượt quá giới hạn lượt gọi API (Quota).");
     } else {
-      console.error("AI Analysis Error:", error);
+      console.error("Lỗi phân tích AI:", error.message || error);
     }
     return [];
   }
