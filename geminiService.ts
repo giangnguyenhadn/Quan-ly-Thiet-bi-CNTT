@@ -7,9 +7,10 @@ const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
 // Kiểm tra API key
 if (!apiKey) {
-  console.warn("Missing Gemini API Key");
+  throw new Error("Missing Gemini API Key");
 }
 
+const genAI = new GoogleGenerativeAI(apiKey);
 // Khởi tạo Gemini
 const genAI = new GoogleGenerativeAI(apiKey);
 
