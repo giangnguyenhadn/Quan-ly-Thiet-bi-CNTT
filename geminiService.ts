@@ -2,16 +2,12 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Device, AIRecommendation } from "./types";
 
-// Lấy API key từ Vite ENV
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
-// Kiểm tra API key
 if (!apiKey) {
   throw new Error("Missing Gemini API Key");
 }
 
-const genAI = new GoogleGenerativeAI(apiKey);
-// Khởi tạo Gemini
 const genAI = new GoogleGenerativeAI(apiKey);
 
 export const getAIRecommendations = async (
@@ -27,7 +23,6 @@ export const getAIRecommendations = async (
       }
     });
 
-    // Tóm tắt dữ liệu để gửi cho AI
     const dataSummary = devices.map(d => ({
       id: d.id,
       name: d.name,
@@ -38,15 +33,10 @@ export const getAIRecommendations = async (
     const prompt = `
 Phân tích dữ liệu thiết bị CNTT của trường học.
 
-Dữ liệu thiết bị:
+Dữ liệu:
 ${JSON.stringify(dataSummary)}
 
-Yêu cầu:
-- Chỉ trả về JSON
-- Không thêm giải thích
-- Không markdown
-
-Format bắt buộc:
+Trả về JSON dạng:
 
 [
  {
@@ -62,20 +52,25 @@ Format bắt buộc:
 
     const text = result.response.text();
 
-    // Làm sạch JSON nếu AI trả markdown
     const cleaned = text
       .replace(/```json/g, "")
       .replace(/```/g, "")
       .trim();
 
-    const parsed: AIRecommendation[] = JSON.parse(cleaned);
+    let parsed: AIRecommendation[] = [];
+
+    try {
+      parsed = JSON.parse(cleaned);
+    } catch {
+      console.error("Invalid JSON from AI:", cleaned);
+      return [];
+    }
 
     return parsed;
 
   } catch (error) {
 
     console.error("AI Analysis Error:", error);
-
     return [];
 
   }
