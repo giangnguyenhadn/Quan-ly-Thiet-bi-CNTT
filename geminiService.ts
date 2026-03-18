@@ -3,8 +3,8 @@ import { Device, AIRecommendation } from "./types";
 
 // Lấy API Key từ biến môi trường
 // Lưu ý: Trên Vercel, bạn phải thêm biến VITE_GEMINI_API_KEY trong phần Settings -> Environment Variables
-const apiKey = import.meta.env.GEMINI_API_KEY;
-
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+const ai = new GoogleGenAI({ apiKey });
 export const getAIRecommendations = async (
   devices: Device []
 ): Promise<AIRecommendation[]> => {
