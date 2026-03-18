@@ -10,7 +10,7 @@ export const getAIRecommendations = async (
 ): Promise<AIRecommendation[]> => {
   // 1. Kiểm tra cấu hình và Log trạng thái để Debug
   if (!apiKey) {
-    console.error("LỖI: Không tìm thấy GEMINI_API_KEY. Hãy kiểm tra cấu hình trên Vercel Dashboard.");
+    console.error("LỖI: Không tìm thấy VITE.GEMINI_API_KEY. Hãy kiểm tra cấu hình trên Vercel Dashboard.");
     return [];
   }
 
