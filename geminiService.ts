@@ -15,7 +15,7 @@ export const getAIRecommendations = async (devices: Device[]): Promise<AIRecomme
     }));
 
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash-preview",
+      model: "gemini-2.5-flash-preview",
       contents: `Phân tích danh sách thiết bị sau và đề xuất sửa chữa hoặc thanh lý. 
       Quy tắc: 
       - Thanh lý nếu: Sử dụng quá 5 năm HOẶC hư hỏng nặng HOẶC sửa chữa > 5 lần.
