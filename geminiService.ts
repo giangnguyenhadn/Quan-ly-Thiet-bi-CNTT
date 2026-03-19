@@ -4,7 +4,7 @@ import { Device, AIRecommendation } from "./types";
 
 export const getAIRecommendations = async (devices: Device[]): Promise<AIRecommendation[]> => {
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: process.env.VITE_GEMINI_API_KEY });
     
     const deviceSummary = devices.map(d => ({
       id: d.id,
@@ -15,7 +15,7 @@ export const getAIRecommendations = async (devices: Device[]): Promise<AIRecomme
     }));
 
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-1.5-flash-preview",
       contents: `Phân tích danh sách thiết bị sau và đề xuất sửa chữa hoặc thanh lý. 
       Quy tắc: 
       - Thanh lý nếu: Sử dụng quá 5 năm HOẶC hư hỏng nặng HOẶC sửa chữa > 5 lần.
