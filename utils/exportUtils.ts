@@ -12,8 +12,11 @@ export const exportOrPrint = (
   const month = (now.getMonth() + 1).toString().padStart(2, '0');
   const year = now.getFullYear();
   const dateLine = `Hòa Xuân, ngày ${day} tháng ${month} năm ${year}`;
-  const schoolYear = `${year}-${year + 1}`;
-  
+  const schoolYear = 
+  now.getMonth() >= 7
+    ? `${year}-${year + 1}`
+    : `${year - 1}-${year}`;
+
   const totalCols = columns.length;
   const colLeft = Math.floor(totalCols * 0.45) || 3; 
   const colRight = totalCols - colLeft;
