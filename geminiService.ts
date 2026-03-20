@@ -4,7 +4,7 @@ import { Device, AIRecommendation } from "./types";
 
 export const getAIRecommendations = async (devices: Device[]): Promise<AIRecommendation[]> => {
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.VITE_GEMINI_API_KEY });
+    const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
     
     const deviceSummary = devices.map(d => ({
       id: d.id,
